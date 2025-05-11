@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Resume Maker</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        /* Form Styles */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 20px;
+        }
+        
+        .form-section h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .dynamic-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .dynamic-inputs {
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .remove-btn {
+            background-color: #e74c3c;
+        }
+        
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        /* Resume Preview Styles */
+        .resume-preview {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .resume-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .resume-header h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .resume-contact {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #7f8c8d;
+        }
+        
+        .resume-section {
+            margin-bottom: 20px;
+        }
+        
+        .resume-section h3 {
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 15px;
+        }
+        
+        .experience-header, .education-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .company-name, .institution-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .job-title, .degree-name {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-item {
+            background-color: #f0f8ff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #3498db;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #print-button {
+            background-color: #27ae60;
+            margin-top: 20px;
+        }
+        
+        #print-button:hover {
+            background-color: #219653;
+        }
+
+        @media print {
+            .form-container, #print-button, .back-to-edit {
+                display: none;
+            }
+            
+            .resume-preview {
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            body {
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Resume Maker</h1>
+        
+        <!-- Form Container -->
+        <div class="form-container" id="resume-form">
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="john.doe@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" placeholder="(123) 456-7890">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="City, State">
+                </div>
+                <div class="form-group">
+                    <label for="summary">Professional Summary</label>
+                    <textarea id="summary" placeholder="A brief summary of your professional background and career goals..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Work Experience -->
+            <div class="form-section">
+                <h2>Work Experience</h2>
+                <div id="experience-container">
+                    <!-- Experience items will be added here -->
+                </div>
+                <button type="button" id="add-experience">Add Work Experience</button>
+            </div>
+            
+            <!-- Education -->
+            <div class="form-section">
+                <h2>Education</h2>
+                <div id="education-container">
+                    <!-- Education items will be added here -->
+                </div>
+                <button type="button" id="add-education">Add Education</button>
+            </div>
+            
+            <!-- Skills -->
+            <div class="form-section">
+                <h2>Skills</h2>
+                <div class="form-group">
+                    <label for="skills">Enter skills (comma separated)</label>
+                    <input type="text" id="skills" placeholder="HTML, CSS, JavaScript, Communication, Leadership">
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="button" id="generate-resume">Generate Resume</button>
+                <button type="button" id="reset-form">Reset Form</button>
+            </div>
+        </div>
+        
+        <!-- Preview Container -->
+        <div class="resume-preview hidden" id="resume-preview">
+            <!-- Resume content will be generated here -->
+        </div>
+        
+        <button type="button" id="print-button" class="hidden">Print Resume</button>
+        <button type="button" class="back-to-edit hidden" id="back-to-edit">Back to Edit</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const generateBtn = document.getElementById('generate-resume');
+            const resetBtn = document.getElementById('reset-form');
+            const addExperienceBtn = document.getElementById('add-experience');
+            const addEducationBtn = document.getElementById('add-education');
+            const experienceContainer = document.getElementById('experience-container');
+            const educationContainer = document.getElementById('education-container');
+            const resumeForm = document.getElementById('resume-form');
+            const resumePreview = document.getElementById('resume-preview');
+            const printButton = document.getElementById('print-button');
+            const backToEditButton = document.getElementById('back-to-edit');
+            
+            // Add initial experience and education fields
+            addExperienceField();
+            addEducationField();
+            
+            // Event Listeners
+            addExperienceBtn.addEventListener('click', addExperienceField);
+            addEducationBtn.addEventListener('click', addEducationField);
+            generateBtn.addEventListener('click', generateResume);
+            resetBtn.addEventListener('click', resetForm);
+            printButton.addEventListener('click', printResume);
+            backToEditButton.addEventListener('click', backToEdit);
+            
+            // Functions
+            function addExperienceField() {
+                const experienceIndex = document.querySelectorAll('.experience-field').length;
+                
+                const experienceField = document.createElement('div');
+                experienceField.className = 'experience-field';
+                experienceField.innerHTML = `
+                    <div class="form-group">
+                        <label for="jobTitle-${experienceIndex}">Job Title</label>
+                        <input type="text" id="jobTitle-${experienceIndex}" placeholder="Software Developer">
+                    </div>
+                    <div class="form-group">
+                        <label for="company-${experienceIndex}">Company</label>
+                        <input type="text" id="company-${experienceIndex}" placeholder="Tech Company Inc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="location-${experienceIndex}">Location</label>
+                        <input type="text" id="location-${experienceIndex}" placeholder="City, State">
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate-${experienceIndex}">Start Date</label>
+                        <input type="text" id="startDate-${experienceIndex}" placeholder="January 2020">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate-${experienceIndex}">End Date</label>
+                        <input type="text" id="endDate-${experienceIndex}" placeholder="Present">
+                    </div>
+                    <div class="form-group">
+                        <label for="description-${experienceIndex}">Description</label>
+                        <textarea id="description-${experienceIndex}" placeholder="Describe your responsibilities and achievements..."></textarea>
+                    </div>
+                `;
+                
+                if (experienceIndex > 0) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.addEventListener('click', function() {
+                        experienceField.remove();
+                    });
+                    experienceField.appendChild(removeBtn);
+                }
+                
+                experienceContainer.appendChild(experienceField);
+            }
+            
+            function addEducationField() {
+                const educationIndex = document.querySelectorAll('.education-field').length;
+                
+                const educationField = document.createElement('div');
+                educationField.className = 'education-field';
+                educationField.innerHTML = `
+                    <div class="form-group">
+                        <label for="degree-${educationIndex}">Degree</label>
+                        <input type="text" id="degree-${educationIndex}" placeholder="Bachelor of Science in Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="institution-${educationIndex}">Institution</label>
+                        <input type="text" id="institution-${educationIndex}" placeholder="University Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="eduLocation-${educationIndex}">Location</label>
+                        <input type="text" id="eduLocation-${educationIndex}" placeholder="City, State">
+                    </div>
+                    <div class="form-group">
+                        <label for="graduationDate-${educationIndex}">Graduation Date</label>
+                        <input type="text" id="graduationDate-${educationIndex}" placeholder="May 2019">
+                    </div>
+                `;
+                
+                if (educationIndex > 0) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.addEventListener('click', function() {
+                        educationField.remove();
+                    });
+                    educationField.appendChild(removeBtn);
+                }
+                
+                educationContainer.appendChild(educationField);
+            }
+            
+            function generateResume() {
+                // Get personal info
+                const fullName = document.getElementById('fullName').value || 'Your Name';
+                const email = document.getElementById('email').value || 'your.email@example.com';
+                const phone = document.getElementById('phone').value || '(123) 456-7890';
+                const location = document.getElementById('location').value || 'City, State';
+                const summary = document.getElementById('summary').value || 'Professional summary not provided.';
+                
+                // Get work experience
+                const experienceFields = document.querySelectorAll('.experience-field');
+                let experienceHTML = '';
+                
+                experienceFields.forEach((field, index) => {
+                    const jobTitle = document.getElementById(`jobTitle-${index}`).value || 'Job Title';
+                    const company = document.getElementById(`company-${index}`).value || 'Company';
+                    const loc = document.getElementById(`location-${index}`).value || 'Location';
+                    const startDate = document.getElementById(`startDate-${index}`).value || 'Start Date';
+                    const endDate = document.getElementById(`endDate-${index}`).value || 'Present';
+                    const description = document.getElementById(`description-${index}`).value || 'Job description not provided.';
+                    
+                    experienceHTML += `
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <div class="company-name">${company}</div>
+                                <div class="date">${startDate} - ${endDate}</div>
+                            </div>
+                            <div class="job-title">${jobTitle} | ${loc}</div>
+                            <div class="description">${description}</div>
+                        </div>
+                    `;
+                });
+                
+                // Get education
+                const educationFields = document.querySelectorAll('.education-field');
+                let educationHTML = '';
+                
+                educationFields.forEach((field, index) => {
+                    const degree = document.getElementById(`degree-${index}`).value || 'Degree';
+                    const institution = document.getElementById(`institution-${index}`).value || 'Institution';
+                    const eduLoc = document.getElementById(`eduLocation-${index}`).value || 'Location';
+                    const graduationDate = document.getElementById(`graduationDate-${index}`).value || 'Graduation Date';
+                    
+                    educationHTML += `
+                        <div class="education-item">
+                            <div class="education-header">
+                                <div class="institution-name">${institution}</div>
+                                <div class="date">${graduationDate}</div>
+                            </div>
+                            <div class="degree-name">${degree} | ${eduLoc}</div>
+                        </div>
+                    `;
+                });
+                
+                // Get skills
+                const skillsInput = document.getElementById('skills').value;
+                const skills = skillsInput ? skillsInput.split(',').map(skill => skill.trim()) : [];
+                
+                let skillsHTML = '';
+                if (skills.length > 0) {
+                    skillsHTML = `
+                        <div class="skills-list">
+                            ${skills.map(skill => `<div class="skill-item">${skill}</div>`).join('')}
+                        </div>
+                    `;
+                } else {
+                    skillsHTML = '<p>No skills provided.</p>';
+                }
+                
+                // Generate resume HTML
+                const resumeHTML = `
+                    <div class="resume-header">
+                        <h2>${fullName}</h2>
+                    </div>
+                    <div class="resume-contact">
+                        ${email} | ${phone} | ${location}
+                    </div>
+                    <div class="resume-section">
+                        <h3>Professional Summary</h3>
+                        <p>${summary}</p>
+                    </div>
+                    <div class="resume-section">
+                        <h3>Work Experience</h3>
+                        ${experienceHTML || '<p>No work experience provided.</p>'}
+                    </div>
+                    <div class="resume-section">
+                        <h3>Education</h3>
+                        ${educationHTML || '<p>No education provided.</p>'}
+                    </div>
+                    <div class="resume-section">
+                        <h3>Skills</h3>
+                        ${skillsHTML}
+                    </div>
+                `;
+                
+                // Show resume preview
+                resumePreview.innerHTML = resumeHTML;
+                resumeForm.classList.add('hidden');
+                resumePreview.classList.remove('hidden');
+                printButton.classList.remove('hidden');
+                backToEditButton.classList.remove('hidden');
+            }
+            
+            function resetForm() {
+                const confirmReset = confirm('Are you sure you want to reset all form data?');
+                if (confirmReset) {
+                    // Clear all input fields
+                    document.querySelectorAll('input, textarea').forEach(input => {
+                        input.value = '';
+                    });
+                    
+                    // Remove all experience and education fields except the first one
+                    while (experienceContainer.children.length > 1) {
+                        experienceContainer.removeChild(experienceContainer.lastChild);
+                    }
+                    
+                    while (educationContainer.children.length > 1) {
+                        educationContainer.removeChild(educationContainer.lastChild);
+                    }
+                }
+            }
+            
+            function printResume() {
+                window.print();
+            }
+            
+            function backToEdit() {
+                resumeForm.classList.remove('hidden');
+                resumePreview.classList.add('hidden');
+                printButton.classList.add('hidden');
+                backToEditButton.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
